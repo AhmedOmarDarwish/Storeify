@@ -1,7 +1,3 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Storeify.Web.Data;
-
 namespace Storeify.Web
 {
     public class Program
@@ -10,15 +6,30 @@ namespace Storeify.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Add services to AddDependencies class. 
+
+            //ConnectionString
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
+
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+            //Identity
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
             builder.Services.AddControllersWithViews();
+
+            //AutoMapper
+            builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
+            //ExpressiveAnnotations
+            builder.Services.AddExpressiveAnnotations();
+
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IService<Store>, StoreService>();
+            builder.Services.AddScoped<IService<Branch>, BranchService>();
 
             var app = builder.Build();
 

@@ -1,6 +1,4 @@
 using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Storeify.Web.Models;
 
 namespace Storeify.Web.Controllers
 {
