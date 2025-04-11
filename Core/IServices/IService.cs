@@ -5,8 +5,8 @@ namespace Storeify.Core.IServices
     {
         Task<T?> GetByIdAsync(int id);
         Task<bool?> FindAsync(int id);
-        Task<T?> GetFirstAsync();
-        Task<T?> GetFirstAsync(Expression<Func<T, bool>> predicate);
+        Task<T?> GetSingleAsync();
+        Task<T?> GetSingleAsync(Expression<Func<T, bool>> predicate);
         Task<IEnumerable<T>?> GetAllAsync();
         Task<IEnumerable<T>?> GetAllActiveAsync();
         Task CreateAsync(T branch);

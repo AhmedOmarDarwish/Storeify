@@ -20,13 +20,13 @@ namespace Storeify.Core.Services
             return await _unitOfWork.BranchRepository.FindAsync(id);
         }
 
-        public async Task<Branch?> GetFirstAsync()
+        public async Task<Branch?> GetSingleAsync()
         {
-            return await _unitOfWork.BranchRepository.GetFirstAsync();
+            return await _unitOfWork.BranchRepository.GetSingleAsync();
         }
-        public async Task<Branch?> GetFirstAsync(Expression<Func<Branch, bool>> predicate)
+        public async Task<Branch?> GetSingleAsync(Expression<Func<Branch, bool>> predicate)
         {
-            return await _unitOfWork.BranchRepository.GetFirstAsync(predicate);
+            return await _unitOfWork.BranchRepository.GetSingleAsync(predicate);
         }
 
         public async Task<IEnumerable<Branch>?> GetAllAsync()

@@ -1,5 +1,6 @@
 ﻿namespace Storeify.Data.Entities
 {
+    [Index(nameof(Barcode),  IsUnique = true)]
     public class Product : BasseModel
     {
         public int Id { get; set; }

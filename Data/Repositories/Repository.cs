@@ -35,15 +35,15 @@ namespace Storeify.Data.Repositories
                 return null;
             }
         }
-        public async Task<T?> GetFirstAsync()
+        public async Task<T?> GetSingleAsync()
         {
-            return await _dbSet.AsNoTracking().FirstOrDefaultAsync();
+            return await _dbSet.AsNoTracking().SingleOrDefaultAsync();
         }
-        public async Task<T?> GetFirstAsync(Expression<Func<T, bool>> predicate)
+        public async Task<T?> GetSingleAsync(Expression<Func<T, bool>> predicate)
         {
             try
             {
-                return await _dbSet.AsNoTracking().FirstOrDefaultAsync(predicate);
+                return await _dbSet.AsNoTracking().SingleOrDefaultAsync(predicate);
             }
             catch (Exception)
             {

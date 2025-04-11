@@ -35,15 +35,12 @@ namespace Storeify.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            //Product
-            builder.Entity<Product>().HasIndex(e => e.Barcode);
-
             //Review
-             builder.Entity<Review>()
+            builder.Entity<Review>()
             .Property(r => r.Rating)
             .HasPrecision(3, 2);
 
-            //Inventory
+            //InventoryProduct
             builder.Entity<InventoryProduct>()
             .HasKey(ip => new { ip.InventoryId, ip.ProductId });
 

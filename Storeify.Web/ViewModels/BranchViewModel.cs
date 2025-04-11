@@ -1,13 +1,13 @@
 ﻿
 namespace Storeify.Web.ViewModels
 {
-    public class BranchFormViewModels:BasseModel
+    public class BranchViewModel:BasseModel
     {
         public int Id { get; set; }
 
-        [MaxLength(200, ErrorMessage = Errors.MaxLength)]
+        [MaxLength(50, ErrorMessage = Errors.MaxLength)]
         [Remote("AllowItem", null!, AdditionalFields = "Id,StoreId", ErrorMessage = Errors.DuplicatedBranch)]
-        public string Location { get; set; } = null!;
+        public string Name { get; set; } = null!;
 
         [DataType(DataType.PhoneNumber)]
         [MaxLength(15)]
@@ -15,7 +15,7 @@ namespace Storeify.Web.ViewModels
         public string? Phone { get; set; }
 
         [Display(Name = "Store")]
-        [Remote("AllowItem", null!, AdditionalFields = "Id,Location", ErrorMessage = Errors.DuplicatedBranch)]
+        [Remote("AllowItem", null!, AdditionalFields = "Id,Name", ErrorMessage = Errors.DuplicatedBranch)]
         public int StoreId { get; set; }
 
         public Store? Store { get; set; }

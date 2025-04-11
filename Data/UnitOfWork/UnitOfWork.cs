@@ -5,12 +5,16 @@
         private readonly ApplicationDbContext _context;
         public IRepository<Store> StoreRepository { get; }
         public IRepository<Branch> BranchRepository { get; }
+        public IRepository<Category> CategoryRepository { get; }
+        public IRepository<Inventory> InventoryRepository { get; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
             StoreRepository = new Repository<Store>(_context);
             BranchRepository = new Repository<Branch>(_context);
+            CategoryRepository = new Repository<Category>(_context);
+            InventoryRepository = new Repository<Inventory>(_context);
         }
 
         public async Task<int> CompleteAsync()

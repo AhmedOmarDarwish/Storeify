@@ -1,5 +1,82 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<InventoryViewModel>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery antiforgery
+
 @{
+    ViewData["Title"] = "Inventories";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.bundle.css" />
+}
+<div class="alert  bg-light-primary border border-primary border-3 border-dashed d-flex justify-content-between flex-sm-row w-100 p-5 mb-10">
+    <!--begin::Icon-->
+    <div class="d-flex align-items-center">
+        <div class="symbol symbol-40px me-4">
+            <div class="symbol-label fs-2 fw-semibold text-success">
+                <!--begin::Svg Icon-->
+                <span class="svg-icon svg-icon-3x svg-icon-primary">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 9V11C21 11.6 20.6 12 20 12H14V8H20C20.6 8 21 8.4 21 9ZM10 8H4C3.4 8 3 8.4 3 9V11C3 11.6 3.4 12 4 12H10V8Z" fill="currentColor" />
+                        <path d="M15 2C13.3 2 12 3.3 12 5V8H15C16.7 8 18 6.7 18 5C18 3.3 16.7 2 15 2Z" fill="currentColor" />
+                        <path opacity="0.3" d="M9 2C10.7 2 12 3.3 12 5V8H9C7.3 8 6 6.7 6 5C6 3.3 7.3 2 9 2ZM4 12V21C4 21.6 4.4 22 5 22H10V12H4ZM20 12V21C20 21.6 19.6 22 19 22H14V12H20Z" fill="currentColor" />
+                    </svg>
+                </span>
+                <!--end::Svg Icon-->
+            </div>
+        </div>
+        <div class="d-flex flex-column pe-0 pe-sm10 ">
+            <h3 class="card-title">Inventories</h3>
+        </div>
+    </div>
+    <div>
+        <a href="javascript:;" class="btn btn-sm btn-primary js-render-modal"
+           data-title="Add Inventories" data-url="/Inventories/Create/">
+            <i class="bi bi-plus-square-dotted"></i>
+            Add
+        </a>
+    </div>
+    <!--end::Icon-->
+</div>
+
+<div class="card shadow-sm">
+    <partial name="_DataTablesCardHeader" />
+    <div class="card-body pt-0">
+        <div class="table-responsive">
+            <table class="table table-row-gray300 gy-7 js-datatables" data-document-title="Branches">
+                <thead>
+                    <tr class="fw-semibold fs-6 text-gray-800 border-bottom border-gray-200">
+                        <th> @Html.DisplayNameFor(model => model.Name)</th>
+                        <th>@Html.DisplayNameFor(model => model.IsDeleted)</th>
+                        <th>@Html.DisplayNameFor(model => model.Branch)</th>
+                        <th>@Html.DisplayNameFor(model => model.CreatedBy)</th>
+                        <th>@Html.DisplayNameFor(model => model.CreatedDate)</th>
+                        @* <th>@Html.DisplayNameFor(model => model.UpdatedBy)</th> *@
+                        <th> @Html.DisplayNameFor(model => model.UpdatedDate)</th>
+                        @* <th>@Html.DisplayNameFor(model => model.DeletedBy)</th> *@
+                        @* <th>@Html.DisplayNameFor(model => model.DeletedDate)</th> *@
+                        @* <th>@Html.DisplayNameFor(model => model.DeletedReason)</th> *@
+                        <th class="js-no-export">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var branch in Model)
+                    {
+                        <partial name="_InventoryRow" model="@branch" />
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
+<input type="hidden" name="__RequestVerificationToken" value="@antiforgery.GetAndStoreTokens(Context).RequestToken" />
+
+@* @Html.AntiForgeryToken() *@
+
+@section Plugins
+{
+    <script src="~/assets/plugins/datatables/datatables.bundle.js"></script>
+}
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }

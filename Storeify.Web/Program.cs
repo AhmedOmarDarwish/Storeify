@@ -30,6 +30,8 @@ namespace Storeify.Web
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IService<Store>, StoreService>();
             builder.Services.AddScoped<IService<Branch>, BranchService>();
+            builder.Services.AddScoped<IService<Category>, CategoryService>();
+            builder.Services.AddScoped<IService<Inventory>, InventoryService>();
 
             var app = builder.Build();
 

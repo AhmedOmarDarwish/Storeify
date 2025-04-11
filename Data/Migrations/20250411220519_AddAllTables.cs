@@ -213,7 +213,7 @@ namespace Storeify.Web.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Location = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     StoreId = table.Column<int>(type: "int", nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: false),
@@ -370,7 +370,8 @@ namespace Storeify.Web.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BranchID = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    BranchId = table.Column<int>(type: "int", nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedBy = table.Column<int>(type: "int", nullable: true),
@@ -384,8 +385,8 @@ namespace Storeify.Web.Data.Migrations
                 {
                     table.PrimaryKey("PK_Inventories", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Inventories_Branches_BranchID",
-                        column: x => x.BranchID,
+                        name: "FK_Inventories_Branches_BranchId",
+                        column: x => x.BranchId,
                         principalTable: "Branches",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -677,6 +678,12 @@ namespace Storeify.Web.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Branches_Name_StoreId",
+                table: "Branches",
+                columns: new[] { "Name", "StoreId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Branches_StoreId",
                 table: "Branches",
                 column: "StoreId");
@@ -690,6 +697,12 @@ namespace Storeify.Web.Data.Migrations
                 name: "IX_Carts_OrderID",
                 table: "Carts",
                 column: "OrderID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Categories_Name",
+                table: "Categories",
+                column: "Name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Deliveries_CompanyID",
@@ -722,9 +735,14 @@ namespace Storeify.Web.Data.Migrations
                 column: "DepartmentID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Inventories_BranchID",
+                name: "IX_Inventories_BranchId",
                 table: "Inventories",
-                column: "BranchID",
+                column: "BranchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Inventories_Name_BranchId",
+                table: "Inventories",
+                columns: new[] { "Name", "BranchId" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -760,7 +778,8 @@ namespace Storeify.Web.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Products_Barcode",
                 table: "Products",
-                column: "Barcode");
+                column: "Barcode",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryID",

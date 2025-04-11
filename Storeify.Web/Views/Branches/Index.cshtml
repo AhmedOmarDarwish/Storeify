@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BranchFormViewModels>
+﻿@model IEnumerable<BranchViewModel>
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery antiforgery
 
 @{
@@ -43,7 +43,7 @@
             <table class="table table-row-gray300 gy-7 js-datatables" data-document-title="Branches">
                 <thead>
                     <tr class="fw-semibold fs-6 text-gray-800 border-bottom border-gray-200">
-                        <th> @Html.DisplayNameFor(model => model.Location)</th>
+                        <th> @Html.DisplayNameFor(model => model.Name)</th>
                         <th>@Html.DisplayNameFor(model => model.IsDeleted)</th>
                         <th>@Html.DisplayNameFor(model => model.Phone)</th>
                         <th>@Html.DisplayNameFor(model => model.Store)</th>
