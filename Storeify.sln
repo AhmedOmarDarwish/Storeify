@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35506.116 d17.12
+VisualStudioVersion = 17.12.35506.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storeify.Web", "Storeify.Web\Storeify.Web.csproj", "{08E24AB2-E43A-4330-B045-95E01B60763A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storeify.Data", "Data\Storeify.Data.csproj", "{CAD5E719-FEA9-4DA2-A198-F0A6A0213832}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storeify.Core", "Core\Storeify.Core.csproj", "{0069BDBF-2FC9-40E6-B3DA-414A283873DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{08E24AB2-E43A-4330-B045-95E01B60763A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08E24AB2-E43A-4330-B045-95E01B60763A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08E24AB2-E43A-4330-B045-95E01B60763A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAD5E719-FEA9-4DA2-A198-F0A6A0213832}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAD5E719-FEA9-4DA2-A198-F0A6A0213832}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAD5E719-FEA9-4DA2-A198-F0A6A0213832}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAD5E719-FEA9-4DA2-A198-F0A6A0213832}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0069BDBF-2FC9-40E6-B3DA-414A283873DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0069BDBF-2FC9-40E6-B3DA-414A283873DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0069BDBF-2FC9-40E6-B3DA-414A283873DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0069BDBF-2FC9-40E6-B3DA-414A283873DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

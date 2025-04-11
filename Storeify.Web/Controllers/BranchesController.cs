@@ -1,0 +1,141 @@
+﻿
+namespace Storeify.Web.Controllers
+{
+    public class BranchesController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly IService<Branch> _branchService;
+        private readonly IService<Store> _StoreService;
+        private readonly IMapper _mapper;
+        public BranchesController(ApplicationDbContext context, IService<Branch> branchService, IMapper mapper, IService<Store> storeService)
+        {
+            _context = context;
+            _branchService = branchService;
+            _mapper = mapper;
+            _StoreService = storeService;
+        }
+
+        // GET: Branches
+        public async Task<IActionResult> Index()
+        {
+            var branches = await _branchService.GetAllIncludingAsync("Store");
+            var modelList = _mapper.Map<List<BranchFormViewModels>>(branches);
+            return View(modelList);
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            return PartialView("_Form", await PopulateViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(BranchFormViewModels model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return PartialView("_Form", await PopulateViewModel(model));
+            }
+            model.CreatedBy = 1;
+            var branch = _mapper.Map<Branch>(model);
+            await _branchService.CreateAsync(branch);
+            var viewModel = _mapper.Map<BranchFormViewModels>(branch);
+            if (viewModel.StoreId != 0)
+            {
+                viewModel.Store = await _StoreService.GetByIdAsync(viewModel.StoreId);
+            }
+            return PartialView("_BranchRow", viewModel);
+        }
+
+        [HttpGet]
+        [AjaxOnly]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var branch = await _branchService.GetWithIncludingAsync(id, nameof(Store))!;
+
+            if (branch is null)
+                return NotFound();
+
+            var viewModel = _mapper.Map<BranchFormViewModels>(branch);
+            if (viewModel.StoreId != 0)
+            {
+                viewModel.Store = await _StoreService.GetByIdAsync(viewModel.StoreId);
+            }
+            return PartialView("_Form", await PopulateViewModel(viewModel));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(BranchFormViewModels model)
+        {
+            if (!ModelState.IsValid)
+                return PartialView("_Form", await PopulateViewModel(model));
+
+            var branch = await _branchService.GetByIdAsync(model.Id);
+
+            if (branch is null)
+                return NotFound();
+            branch.Location = model.Location;
+            branch.StoreId = model.StoreId;
+            branch.Phone = model.Phone;
+            //branch = _mapper.Map<Branch>(model);
+            branch.UpdatedDate = DateTime.Now;
+            branch.UpdatedBy = 1;
+
+            await _branchService.UpdateAsync(branch);
+
+            var viewModel = _mapper.Map<BranchFormViewModels>(branch);
+            if (viewModel.StoreId != 0)
+            {
+                viewModel.Store = await _StoreService.GetByIdAsync(viewModel.StoreId);
+            }
+            return PartialView("_BranchRow", viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleStatus(int id)
+        {
+            var branch = await _branchService.GetByIdAsync(id);
+
+            if (branch is null)
+                return NotFound();
+
+            if (!branch.IsDeleted)
+            {
+                branch.IsDeleted = !branch.IsDeleted;
+                branch.DeletedDate = DateTime.Now;
+                branch.DeletedBy = 1;
+            } else
+            {
+                branch.DeletedDate = null;
+                branch.DeletedBy = null;
+                branch.DeletedReason = null;
+            }
+
+            await _branchService.UpdateAsync(branch);
+
+            return Ok(branch.UpdatedDate.ToString());
+        }
+
+        private async Task<BranchFormViewModels> PopulateViewModel(BranchFormViewModels? model = null)
+        {
+            BranchFormViewModels viewModel = model is null ? new BranchFormViewModels() : model;
+            var stores = await _StoreService.GetAllActiveAsync();
+            var sortedStores = stores.ToList().OrderBy(s => s.Name).ToList();
+            viewModel.Stores = _mapper.Map<IEnumerable<SelectListItem>>(sortedStores);
+            return viewModel;
+        }
+
+        public async Task<IActionResult> AllowItem(BranchFormViewModels model)
+        {
+            var branch = await _branchService.GetFirstAsync(b => b.Location == model.Location && b.StoreId == model.StoreId);
+            // (b => b.Title == model.Title && b.AuthorId == model.AuthorId);
+            var isAllowed = branch is null || branch.Id.Equals(model.Id);
+
+            return Json(isAllowed);
+        }
+    }
+}

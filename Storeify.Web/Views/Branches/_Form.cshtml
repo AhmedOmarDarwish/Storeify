@@ -1,0 +1,48 @@
+﻿@model BranchFormViewModels
+
+<form asp-action="@(Model?.Id > 0 ? "Edit" : "Create")"
+      data-ajax-method="post"
+      data-ajax="true"
+      data-ajax-begin="onModalBegin"
+      data-ajax-success="onModalSuccess"
+      data-ajax-failure="showErrorMessage"
+      data-ajax-complete="onModalComplete">
+    @if (Model?.Id > 0)
+    {
+        <input type="hidden" asp-for="Id" />
+    }
+    <div class="mb-5">
+        <div class="form-floating mb-2">
+            <input type="text" class="form-control" placeholder="Location" asp-for="Location" />
+            <label asp-for="Location"></label>
+        </div>
+        <span asp-validation-for="Location" class="text-danger d-block"></span>
+
+        <div class="form-floating mb-2">
+            <input type="tel" class="form-control" placeholder="Branch Phone" asp-for="Phone" />
+            <label asp-for="Phone"></label>
+        </div>
+        <span asp-validation-for="Phone" class="text-danger d-block"></span>
+
+        <div class="form-floating mb-2">
+            <select class="form-select js-select2" data-placeholder="Select An Store" asp-for="StoreId" asp-items="@Model.Stores">
+                <option value="">Select An Store</option>
+            </select>
+            <label asp-for="StoreId"></label>
+        </div>
+        <span asp-validation-for="StoreId" class="text-danger d-block"></span>
+    </div>
+
+    <partial name="_ModalFooter" />
+</form>
+
+@section Scripts  
+ {  
+     <script>  
+         $(document).ready(function(){  
+             // Apply phone number mask  
+             $('input[type="tel"]').mask('(000) 0000-0000');  
+         });  
+     </script> 
+ } 
+
