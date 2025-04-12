@@ -128,7 +128,7 @@
 
         public async Task<IActionResult> AllowItem(InventoryViewModel model)
         {
-            var inventory = await _inventoryService.GetSingleAsync(b => b.Name == model.Name && b.BranchId == model.BranchId);
+            var inventory = await _inventoryService.GetSingleAsync(b => b.Name.Trim() == model.Name.Trim() && b.BranchId == model.BranchId);
             var isAllowed = inventory is null || inventory.Id.Equals(model.Id);
 
             return Json(isAllowed);

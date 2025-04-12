@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Storeify.Core.Services;
 using Storeify.Data.Entities;
 
 namespace Storeify.Web.Controllers
@@ -22,8 +23,26 @@ namespace Storeify.Web.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            return View();
+            var product = await _productService.GetAllIncludingAsync(nameof(Category));
+            var modelList = _mapper.Map<List<ProductViewModel>>(product);
+            return View(modelList);
         }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var product = await _productService.GetWithIncludingAsync(id, nameof(Category));
+            if (product is null)
+            {
+                return NotFound();
+            }
+            var viewModel = _mapper.Map<ProductViewModel>(product);
+
+            if (viewModel is null)
+                return NotFound();
+
+            return View(viewModel);
+        }
+
         [HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -67,7 +86,7 @@ namespace Storeify.Web.Controllers
             await _productService.CreateAsync(product);
             return RedirectToAction(nameof(Index));
         }
-
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             var product = await _productService.GetWithIncludingAsync(id, nameof(Category));
@@ -108,7 +127,7 @@ namespace Storeify.Web.Controllers
                 if (!_allowedExtensions.Contains(extension))
                 {
                     ModelState.AddModelError(nameof(model.Image), Errors.NotAllowedExtension);
-                    return View(viewName: "Form", PopulateViewModel(model));
+                    return View(viewName: "Form", await PopulateViewModel(model));
                 }
 
                 if (model.Image.Length > _maxAllowedSize)
@@ -128,8 +147,10 @@ namespace Storeify.Web.Controllers
             {
                 model.ImageUrl = product.ImageUrl;
             }
+            model.CreatedDate = product.CreatedDate;
+            model.CreatedBy = product.CreatedBy;
             product = _mapper.Map(model, product);
-            product.UpdatedDate = DateTime.UtcNow;
+            product.UpdatedDate = DateTime.Now;
             product.UpdatedBy = 1;
             product.IsDeleted = !model.IsDeleted;
 
@@ -272,6 +293,33 @@ namespace Storeify.Web.Controllers
         //    return _context.Products.Any(e => e.Id == id);
         //}
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleStatus(int id)
+        {
+            var product = await _productService.GetByIdAsync(id);
+
+            if (product is null)
+                return NotFound();
+
+            if (!product.IsDeleted)
+            {
+                product.IsDeleted = !product.IsDeleted;
+                product.DeletedDate = DateTime.Now;
+                product.DeletedBy = 1;
+            }
+            else
+            {
+                product.IsDeleted = !product.IsDeleted;
+                product.DeletedDate = null;
+                product.DeletedBy = null;
+                product.DeletedReason = null;
+            }
+
+            await _productService.UpdateAsync(product);
+
+            return Ok(product.UpdatedDate.ToString());
+        }
         private async Task<ProductViewModel> PopulateViewModel(ProductViewModel? model = null)
         {
             ProductViewModel viewModel = model is null ? new ProductViewModel() : model;
@@ -283,10 +331,8 @@ namespace Storeify.Web.Controllers
 
         public async Task<IActionResult> AllowItem(ProductViewModel model)
         {
-            var product = await _productService.GetSingleAsync(b => b.Barcode == model.Barcode && b.Name == model.Name);
-            // (b => b.Title == model.Title && b.AuthorId == model.AuthorId);
+            var product = await _productService.GetSingleAsync(b => b.Barcode.Trim() == model.Barcode.Trim());
             var isAllowed = product is null || product.Id.Equals(model.Id);
-
             return Json(isAllowed);
         }
     }

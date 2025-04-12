@@ -131,7 +131,7 @@ namespace Storeify.Web.Controllers
 
         public async Task<IActionResult> AllowItem(BranchViewModel model)
         {
-            var branch = await _branchService.GetSingleAsync(b => b.Name == model.Name && b.StoreId == model.StoreId);
+            var branch = await _branchService.GetSingleAsync(b => b.Name.Trim() == model.Name.Trim() && b.StoreId == model.StoreId);
             // (b => b.Title == model.Title && b.AuthorId == model.AuthorId);
             var isAllowed = branch is null || branch.Id.Equals(model.Id);
 

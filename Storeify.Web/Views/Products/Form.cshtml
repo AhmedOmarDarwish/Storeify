@@ -105,6 +105,8 @@
                                 <input class="form-check-input" type="checkbox" asp-for="IsDeleted">
                                 <label class="form-check-label" asp-for="IsDeleted">Available</label>
                             </div>
+                            <span asp-validation-for="IsDeleted" class="text-danger d-block"></span>
+
                         </div>
                     </div>
                 </div>
@@ -112,7 +114,7 @@
                     <div class="mb-5">
                         <div class="form-floating mb-2">
                             @* form-control-solid  *@  @* js-tinymce *@
-                            <textarea style="height: 250px;" class="form-control" placeholder="Description" asp-for="Description"></textarea>
+                            <textarea class="form-control js-tinymce" placeholder="Description" asp-for="Description"></textarea>
                             <label asp-for="Description"></label>
                         </div>
                         <span asp-validation-for="Description" class="text-danger d-block"></span>
@@ -136,11 +138,6 @@
 
 @section Scripts
 {
-    @* <script> *@
-    @*     $(document).ready(function(){ *@
-    @*         // Apply phone number mask *@
-    @*         $('input[type="number"]').mask('99,999,999.99'); *@
-    @*     }); *@
-    @* </script> *@
+    <script src="~/assets/plugins/tinymce/tinymce.bundle.js"></script>
     <partial name="_ValidationScriptsPartial" />
 }

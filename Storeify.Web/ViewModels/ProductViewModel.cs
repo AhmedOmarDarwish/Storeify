@@ -5,15 +5,16 @@ namespace Storeify.Web.ViewModels
     public class ProductViewModel:BasseModel
     {
         public int Id { get; set; }
-        [Remote("AllowItem", null!, AdditionalFields = "Id,Name", ErrorMessage = Errors.DuplicatedProduct)]
+        [Remote("AllowItem", null!, AdditionalFields = "Id,Barcode", ErrorMessage = Errors.DuplicatedBarcode)]
         [MaxLength(50, ErrorMessage = Errors.MaxLength)]
         public string Barcode { get; set; } = null!;
 
-        [Remote("AllowItem", null!, AdditionalFields = "Id,Barcode", ErrorMessage = Errors.DuplicatedProduct)]
+        [Display(Name = "Product")]
+        //[Remote("AllowItem", null!, AdditionalFields = "Id,Barcode", ErrorMessage = Errors.DuplicatedProduct)]
         [MaxLength(50, ErrorMessage = Errors.MaxLength)]
         public string Name { get; set; } = null!;
 
-        [MaxLength(100, ErrorMessage = Errors.MaxLength)]
+        [MaxLength(1000, ErrorMessage = Errors.MaxLength)]
         public string? Description { get; set; }
 
         [MaxLength(length: 300, ErrorMessage = Errors.MaxLength)]
@@ -22,6 +23,7 @@ namespace Storeify.Web.ViewModels
         [Display(Name = "Product Image")]
         public IFormFile? Image { get; set; }
 
+        [Display(Name = "Stock Q")]
         public int? StockQuantity { get; set; } = 0;
 
         [Column(TypeName = "decimal(10,2)")]

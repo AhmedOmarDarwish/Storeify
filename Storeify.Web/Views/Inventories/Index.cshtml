@@ -42,7 +42,7 @@
     <partial name="_DataTablesCardHeader" />
     <div class="card-body pt-0">
         <div class="table-responsive">
-            <table class="table table-row-gray300 gy-7 js-datatables" data-document-title="Branches">
+            <table class="table table-row-gray300 gy-2 align-middle js-datatables" data-document-title="Inventories">
                 <thead>
                     <tr class="fw-semibold fs-6 text-gray-800 border-bottom border-gray-200">
                         <th> @Html.DisplayNameFor(model => model.Name)</th>
@@ -59,9 +59,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var branch in Model)
+                    @foreach (var inventory in Model)
                     {
-                        <partial name="_InventoryRow" model="@branch" />
+                        <partial name="_InventoryRow" model="@inventory" />
                     }
                 </tbody>
 

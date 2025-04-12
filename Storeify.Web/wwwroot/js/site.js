@@ -57,6 +57,14 @@ function onModalComplete() {
 
 }
 
+//Select2
+function applySelect2() {
+    $('.js-select2').select2();
+    $('.js-select2').on('select2:select', function (e) {
+        $('form').not('#SignOut').validate().element('#' + $(this).attr('id'));
+    });
+}
+
 //Data Table
 var headers = $('th');
 $.each(headers, function (i) {
@@ -158,27 +166,27 @@ var KTDatatables = function () {
 
 $(document).ready(function () {
     //Disable submit button
-    $('form').not('#SignOut').not('.js-excluded-validation').on('submit', function () {
-        if ($('.js-tinymce').length > 0) {
-            $('.js-tinymce').each(function () {
-                var input = $(this);
+    //$('form').not('#SignOut').not('.js-excluded-validation').on('submit', function () {
+    //    if ($('.js-tinymce').length > 0) {
+    //        $('.js-tinymce').each(function () {
+    //            var input = $(this);
 
-                var content = tinyMCE.get(input.attr('id')).getContent();
-                input.val(content);
-            });
-        }
+    //            var content = tinyMCE.get(input.attr('id')).getContent();
+    //            input.val(content);
+    //        });
+    //    }
 
-        var isValid = $(this).valid();
-        if (isValid) disableSubmitButton($(this).find(':submit'));
-    });
+    //    var isValid = $(this).valid();
+    //    if (isValid) disableSubmitButton($(this).find(':submit'));
+    //});
 
     //TinyMCE
     if ($('.js-tinymce').length > 0) {
         var options = {
             selector: ".js-tinymce",
-            height: "430",
-            directionality: currentLanguage == 'ar' ? 'rtl' : 'ltr',
-            language: currentLanguage != 'en' ? currentLanguage : undefined,
+            height: "240",
+            //directionality: currentLanguage == 'ar' ? 'rtl' : 'ltr',
+            //language: currentLanguage != 'en' ? currentLanguage : undefined,
         };
 
         if (KTThemeMode.getMode() === "dark") {
@@ -189,13 +197,12 @@ $(document).ready(function () {
         tinymce.init(options);
     }
 
+
+
     //Select2
-    function applySelect2() {
-        $('.js-select2').select2();
-        $('.js-select2').on('select2:select', function (e) {
-            $('form').not('#SignOut').validate().element('#' + $(this).attr('id'));
-        });
-    }
+    //applySelect2();
+    $('.js-select2').select2();
+
 
     //Datepicker
     $('.js-datepicker').daterangepicker({
