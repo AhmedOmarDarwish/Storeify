@@ -40,7 +40,8 @@
                 <input type="hidden" asp-for="Id" />
             }
             <!--begin::Image input-->
-            <div class="image-input image-input-empty mb-10" data-kt-image-input="true"
+            <div class="mb-10">
+            <div class="image-input image-input-empty " data-kt-image-input="true"
                  style="background-image: url('/assets/images/@(string.IsNullOrEmpty(Model.LogoUrl) ? "image-placeholder.jpg" : Model.LogoUrl)');
                 background-size: contain;
                 background-repeat: no-repeat;
@@ -48,8 +49,6 @@
                 <!--begin::Image preview wrapper-->
                 <div class="image-input-wrapper w-400px h-200px"></div>
                 <!--end::Image preview wrapper-->
-
-                <label for="LogoUrl" class="text-muted">Upload your store logo (PNG, JPG, JPEG)</label>
 
                 <!--begin::Edit button-->
                 <label class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
@@ -77,7 +76,9 @@
                 </span>
                 <!--end::Remove button-->
             </div>
+             <div class="form-text">Allowed file types: png, jpg, jpeg and cannot be more that 2 MB</div>
             <span asp-validation-for="Image" class="text-danger d-block"></span>
+            </div>
             <!--end::Image input-->
 
             <div class="row">
