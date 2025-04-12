@@ -2,13 +2,11 @@
 {
     public class InventoriesController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly IService<Branch> _branchService;
         private readonly IService<Inventory> _inventoryService;
         private readonly IMapper _mapper;
-        public InventoriesController(ApplicationDbContext context, IService<Branch> branchService, IMapper mapper, IService<Inventory> inventoryService)
+        public InventoriesController(IService<Branch> branchService, IMapper mapper, IService<Inventory> inventoryService)
         {
-            _context = context;
             _branchService = branchService;
             _mapper = mapper;
             _inventoryService = inventoryService;

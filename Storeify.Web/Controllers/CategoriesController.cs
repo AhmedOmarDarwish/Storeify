@@ -4,12 +4,10 @@ namespace Storeify.Web.Controllers
 {
     public class CategoriesController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly IService<Category> _categoryService;
         private readonly IMapper _mapper;
-        public CategoriesController(ApplicationDbContext context, IService<Branch> branchService, IMapper mapper, IService<Category> categoryService)
+        public CategoriesController(IMapper mapper, IService<Category> categoryService)
         {
-            _context = context;
             _mapper = mapper;
             _categoryService = categoryService;
         }

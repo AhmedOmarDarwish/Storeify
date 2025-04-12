@@ -3,13 +3,11 @@ namespace Storeify.Web.Controllers
 {
     public class BranchesController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly IService<Branch> _branchService;
         private readonly IService<Store> _storeService;
         private readonly IMapper _mapper;
         public BranchesController(ApplicationDbContext context, IService<Branch> branchService, IMapper mapper, IService<Store> storeService)
         {
-            _context = context;
             _branchService = branchService;
             _mapper = mapper;
             _storeService = storeService;

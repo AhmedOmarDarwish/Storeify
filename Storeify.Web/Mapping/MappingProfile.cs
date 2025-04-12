@@ -19,12 +19,22 @@
 
             //Category
             CreateMap<CategoryViewModel, Category>().ReverseMap();
+            CreateMap<Category, SelectListItem>()
+             .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
+             .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Name));
 
 
             //Inventory
             CreateMap<InventoryViewModel, Inventory>()
             .ReverseMap();
             CreateMap<Inventory, SelectListItem>()
+               .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
+               .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Name));
+
+            //Category
+            CreateMap<ProductViewModel, Product>()
+            .ReverseMap();
+            CreateMap<Product, SelectListItem>()
                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
                .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Name));
         }

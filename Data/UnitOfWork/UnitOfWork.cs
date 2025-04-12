@@ -7,6 +7,7 @@
         public IRepository<Branch> BranchRepository { get; }
         public IRepository<Category> CategoryRepository { get; }
         public IRepository<Inventory> InventoryRepository { get; }
+        public IRepository<Product> ProductRepository { get; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -15,6 +16,7 @@
             BranchRepository = new Repository<Branch>(_context);
             CategoryRepository = new Repository<Category>(_context);
             InventoryRepository = new Repository<Inventory>(_context);
+            ProductRepository = new Repository<Product>(_context);
         }
 
         public async Task<int> CompleteAsync()
