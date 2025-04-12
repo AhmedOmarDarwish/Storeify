@@ -5,25 +5,40 @@
         public MappingProfile()
         {
             //Store
-            CreateMap<Store, StoreFormViewModel>();
-            CreateMap<StoreFormViewModel, Store>();
+            CreateMap<Store, StoreViewModel>().ReverseMap();
             CreateMap<Store, SelectListItem>()
             .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Name));
 
             //Branches
-            CreateMap<BranchFormViewModels, Branch>()
+            CreateMap<BranchViewModel, Branch>()
             .ReverseMap();
              CreateMap<Branch, SelectListItem>()
                 .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Location));
-            //CreateMap<Branch, BranchFormViewModels>()
-            //.ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy)).ReverseMap();
-            //CreateMap<BranchFormViewModels, Branch>()
-            //   .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
-            //CreateMap<Branch, BranchFormViewModels>()
-            //    .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+                .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Name));
+
+            //Category
+            CreateMap<CategoryViewModel, Category>().ReverseMap();
+            CreateMap<Category, SelectListItem>()
+             .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
+             .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Name));
+
+
+            //Inventory
+            CreateMap<InventoryViewModel, Inventory>()
+            .ReverseMap();
+            CreateMap<Inventory, SelectListItem>()
+               .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
+               .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Name));
+
+            //Product
+            CreateMap<ProductViewModel, Product>()
+            .ReverseMap();
+            CreateMap<Product, SelectListItem>()
+               .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
+               .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Name));
         }
+
     }
 }
 

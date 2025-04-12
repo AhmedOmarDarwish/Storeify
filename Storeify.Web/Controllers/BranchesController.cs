@@ -3,23 +3,21 @@ namespace Storeify.Web.Controllers
 {
     public class BranchesController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly IService<Branch> _branchService;
-        private readonly IService<Store> _StoreService;
+        private readonly IService<Store> _storeService;
         private readonly IMapper _mapper;
         public BranchesController(ApplicationDbContext context, IService<Branch> branchService, IMapper mapper, IService<Store> storeService)
         {
-            _context = context;
             _branchService = branchService;
             _mapper = mapper;
-            _StoreService = storeService;
+            _storeService = storeService;
         }
 
         // GET: Branches
         public async Task<IActionResult> Index()
         {
             var branches = await _branchService.GetAllIncludingAsync("Store");
-            var modelList = _mapper.Map<List<BranchFormViewModels>>(branches);
+            var modelList = _mapper.Map<List<BranchViewModel>>(branches);
             return View(modelList);
 
         }
@@ -32,7 +30,7 @@ namespace Storeify.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(BranchFormViewModels model)
+        public async Task<IActionResult> Create(BranchViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -41,10 +39,10 @@ namespace Storeify.Web.Controllers
             model.CreatedBy = 1;
             var branch = _mapper.Map<Branch>(model);
             await _branchService.CreateAsync(branch);
-            var viewModel = _mapper.Map<BranchFormViewModels>(branch);
+            var viewModel = _mapper.Map<BranchViewModel>(branch);
             if (viewModel.StoreId != 0)
             {
-                viewModel.Store = await _StoreService.GetByIdAsync(viewModel.StoreId);
+                viewModel.Store = await _storeService.GetByIdAsync(viewModel.StoreId);
             }
             return PartialView("_BranchRow", viewModel);
         }
@@ -58,17 +56,17 @@ namespace Storeify.Web.Controllers
             if (branch is null)
                 return NotFound();
 
-            var viewModel = _mapper.Map<BranchFormViewModels>(branch);
+            var viewModel = _mapper.Map<BranchViewModel>(branch);
             if (viewModel.StoreId != 0)
             {
-                viewModel.Store = await _StoreService.GetByIdAsync(viewModel.StoreId);
+                viewModel.Store = await _storeService.GetByIdAsync(viewModel.StoreId);
             }
             return PartialView("_Form", await PopulateViewModel(viewModel));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(BranchFormViewModels model)
+        public async Task<IActionResult> Edit(BranchViewModel model)
         {
             if (!ModelState.IsValid)
                 return PartialView("_Form", await PopulateViewModel(model));
@@ -77,7 +75,8 @@ namespace Storeify.Web.Controllers
 
             if (branch is null)
                 return NotFound();
-            branch.Location = model.Location;
+
+            branch.Name = model.Name;
             branch.StoreId = model.StoreId;
             branch.Phone = model.Phone;
             //branch = _mapper.Map<Branch>(model);
@@ -86,10 +85,10 @@ namespace Storeify.Web.Controllers
 
             await _branchService.UpdateAsync(branch);
 
-            var viewModel = _mapper.Map<BranchFormViewModels>(branch);
+            var viewModel = _mapper.Map<BranchViewModel>(branch);
             if (viewModel.StoreId != 0)
             {
-                viewModel.Store = await _StoreService.GetByIdAsync(viewModel.StoreId);
+                viewModel.Store = await _storeService.GetByIdAsync(viewModel.StoreId);
             }
             return PartialView("_BranchRow", viewModel);
         }
@@ -110,6 +109,7 @@ namespace Storeify.Web.Controllers
                 branch.DeletedBy = 1;
             } else
             {
+                branch.IsDeleted = !branch.IsDeleted;
                 branch.DeletedDate = null;
                 branch.DeletedBy = null;
                 branch.DeletedReason = null;
@@ -120,18 +120,18 @@ namespace Storeify.Web.Controllers
             return Ok(branch.UpdatedDate.ToString());
         }
 
-        private async Task<BranchFormViewModels> PopulateViewModel(BranchFormViewModels? model = null)
+        private async Task<BranchViewModel> PopulateViewModel(BranchViewModel? model = null)
         {
-            BranchFormViewModels viewModel = model is null ? new BranchFormViewModels() : model;
-            var stores = await _StoreService.GetAllActiveAsync();
+            BranchViewModel viewModel = model is null ? new BranchViewModel() : model;
+            var stores = await _storeService.GetAllActiveAsync();
             var sortedStores = stores.ToList().OrderBy(s => s.Name).ToList();
             viewModel.Stores = _mapper.Map<IEnumerable<SelectListItem>>(sortedStores);
             return viewModel;
         }
 
-        public async Task<IActionResult> AllowItem(BranchFormViewModels model)
+        public async Task<IActionResult> AllowItem(BranchViewModel model)
         {
-            var branch = await _branchService.GetFirstAsync(b => b.Location == model.Location && b.StoreId == model.StoreId);
+            var branch = await _branchService.GetSingleAsync(b => b.Name.Trim() == model.Name.Trim() && b.StoreId == model.StoreId);
             // (b => b.Title == model.Title && b.AuthorId == model.AuthorId);
             var isAllowed = branch is null || branch.Id.Equals(model.Id);
 

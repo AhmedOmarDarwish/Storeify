@@ -1,6 +1,6 @@
 ﻿namespace Storeify.Web.ViewModels
 {
-    public class StoreFormViewModel : BasseModel
+    public class StoreViewModel : BasseModel
     {
         public int Id { get; set; }
 

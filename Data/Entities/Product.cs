@@ -1,18 +1,19 @@
 ﻿namespace Storeify.Data.Entities
 {
+    [Index(nameof(Barcode),  IsUnique = true)]
     public class Product : BasseModel
     {
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(200)]
+        [MaxLength(50)]
         public string Barcode { get; set; } = null!;
 
         [Required]
-        [MaxLength(100)]
+        [MaxLength(50)]
         public string Name { get; set; } = null!;
 
-        [MaxLength(100)]
+        [MaxLength(1000)]
         public string? Description { get; set; }
 
         [MaxLength(length: 300)]
@@ -26,7 +27,7 @@
 
         [Required]
         [ForeignKey(nameof(Category))]
-        public int CategoryID { get; set; }
+        public int CategoryId { get; set; }
 
         // Navigation property
         public virtual Category Category { get; set; } = null!;

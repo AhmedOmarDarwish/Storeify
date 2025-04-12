@@ -12,8 +12,8 @@ using Storeify.Data;
 namespace Storeify.Web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250409185709_AddAllTables")]
-    partial class AddAllTables
+    [Migration("20250412061208_UpdateProductDescription")]
+    partial class UpdateProductDescription
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -253,10 +253,10 @@ namespace Storeify.Web.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Location")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(20)
@@ -274,6 +274,9 @@ namespace Storeify.Web.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("StoreId");
+
+                    b.HasIndex("Name", "StoreId")
+                        .IsUnique();
 
                     b.ToTable("Branches");
                 });
@@ -367,6 +370,9 @@ namespace Storeify.Web.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Categories");
                 });
@@ -774,7 +780,7 @@ namespace Storeify.Web.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BranchID")
+                    b.Property<int>("BranchId")
                         .HasColumnType("int");
 
                     b.Property<int>("CreatedBy")
@@ -795,6 +801,11 @@ namespace Storeify.Web.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("int");
 
@@ -803,7 +814,9 @@ namespace Storeify.Web.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BranchID")
+                    b.HasIndex("BranchId");
+
+                    b.HasIndex("Name", "BranchId")
                         .IsUnique();
 
                     b.ToTable("Inventories");
@@ -1030,10 +1043,10 @@ namespace Storeify.Web.Data.Migrations
 
                     b.Property<string>("Barcode")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("CategoryID")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<int>("CreatedBy")
@@ -1052,8 +1065,8 @@ namespace Storeify.Web.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("ImageUrl")
                         .HasMaxLength(300)
@@ -1064,8 +1077,8 @@ namespace Storeify.Web.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10,2)");
@@ -1081,9 +1094,10 @@ namespace Storeify.Web.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Barcode");
+                    b.HasIndex("Barcode")
+                        .IsUnique();
 
-                    b.HasIndex("CategoryID");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
                 });
@@ -1556,8 +1570,8 @@ namespace Storeify.Web.Data.Migrations
             modelBuilder.Entity("Storeify.Data.Entities.Inventory", b =>
                 {
                     b.HasOne("Storeify.Data.Entities.Branch", "Branch")
-                        .WithOne("Inventory")
-                        .HasForeignKey("Storeify.Data.Entities.Inventory", "BranchID")
+                        .WithMany("Inventories")
+                        .HasForeignKey("BranchId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1633,7 +1647,7 @@ namespace Storeify.Web.Data.Migrations
                 {
                     b.HasOne("Storeify.Data.Entities.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryID")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1695,8 +1709,7 @@ namespace Storeify.Web.Data.Migrations
 
                     b.Navigation("Discounts");
 
-                    b.Navigation("Inventory")
-                        .IsRequired();
+                    b.Navigation("Inventories");
                 });
 
             modelBuilder.Entity("Storeify.Data.Entities.Discount", b =>

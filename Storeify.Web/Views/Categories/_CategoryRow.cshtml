@@ -1,4 +1,4 @@
-﻿@model BranchViewModel
+﻿@model CategoryViewModel
 <tr>
     <td>@Model.Name</td>
     <td>
@@ -10,13 +10,7 @@
         }
         <span class="badge @statusClass js-status">@statusText</span>
     </td>
-    <th>@Model.Phone</th>
-    <th>
-        @if (Model.Store != null)
-        {
-            <p>@Model.Store.Name</p>
-        }
-    </th>
+    <th>@Model.Description</th>
     <th>@Model.CreatedBy</th>
     <th>@Model.CreatedDate</th>
     @* <th>@Model.UpdatedBy</th> *@
@@ -24,8 +18,8 @@
     @* <th>@Model.DeletedBy</th> *@
     @* <th class ="js-updated-on"> @Model.DeletedDate</th> *@
     @* <th>@Model.DeletedReason</th> *@
-    <td>
-            <button type="button" class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary"
+    <td >
+            <button type="button" class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary "
                 data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" data-kt-menu-overflow="true">
                 <span class="svg-icon svg-icon-2">
                     <svg width="24px" height="24px" viewBox="0 0 24 24">
@@ -42,14 +36,14 @@
                  data-kt-menu="true" style="z-index: 107; position: absolute; right: 0; top: 100%;">
                 <div class="menu-item px-3 ">
                     <a href="javascript:;" class="menu-link px-3 js-render-modal"
-                   data-title="Edit Category" data-url="/Branches/Edit/@Model.Id"
+                   data-title="Edit Category" data-url="/Categories/Edit/@Model.Id"
                        data-update = "true">
                     Edit
                 </a>
                 </div>
                 <div class="menu-item px-3">
                     <a href="javascript:;" class="menu-link flex-stack px-3 js-toggle-status"
-                   data-id="@Model.Id" data-url="/Branches/ToggleStatus/@Model.Id">
+                   data-id="@Model.Id" data-url="/Categories/ToggleStatus/@Model.Id">
                         Toggle Status
                     </a>
                 </div>

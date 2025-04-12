@@ -26,9 +26,12 @@ function showErrorMessage(message = 'Something went wrong!') {
         }
     });
 }
+function disableSubmitButton(btn) {
+    $(btn).attr('disabled', 'disabled').attr('data-kt-indicator', 'on');
+}
 
 function onModalBegin() {
-    $('body :submit').prop('disabled', true).attr("data-kt-indicator", "on");
+    disableSubmitButton($('#Modal').find(':submit'));
 }
 
 function onModalSuccess(row) {
@@ -52,6 +55,14 @@ function onModalSuccess(row) {
 function onModalComplete() {
     $('body :submit').prop('disabled', false).removeAttr("data-kt-indicator");
 
+}
+
+//Select2
+function applySelect2() {
+    $('.js-select2').select2();
+    $('.js-select2').on('select2:select', function (e) {
+        $('form').not('#SignOut').validate().element('#' + $(this).attr('id'));
+    });
 }
 
 //Data Table
@@ -154,19 +165,44 @@ var KTDatatables = function () {
 }();
 
 $(document).ready(function () {
+    //Disable submit button
+    //$('form').not('#SignOut').not('.js-excluded-validation').on('submit', function () {
+    //    if ($('.js-tinymce').length > 0) {
+    //        $('.js-tinymce').each(function () {
+    //            var input = $(this);
 
-    ////TinyMCE
-    //var options = { selector: ".js-tinymce", height: "422" };
+    //            var content = tinyMCE.get(input.attr('id')).getContent();
+    //            input.val(content);
+    //        });
+    //    }
 
-    //if (KTThemeMode.getMode() === "dark") {
-    //    options["skin"] = "oxide-dark";
-    //    options["content_css"] = "dark";
-    //}
-    //tinymce.init(options); // Re-initialize
+    //    var isValid = $(this).valid();
+    //    if (isValid) disableSubmitButton($(this).find(':submit'));
+    //});
+
+    //TinyMCE
+    if ($('.js-tinymce').length > 0) {
+        var options = {
+            selector: ".js-tinymce",
+            height: "240",
+            //directionality: currentLanguage == 'ar' ? 'rtl' : 'ltr',
+            //language: currentLanguage != 'en' ? currentLanguage : undefined,
+        };
+
+        if (KTThemeMode.getMode() === "dark") {
+            options["skin"] = "oxide-dark";
+            options["content_css"] = "dark";
+        }
+
+        tinymce.init(options);
+    }
+
 
 
     //Select2
+    //applySelect2();
     $('.js-select2').select2();
+
 
     //Datepicker
     $('.js-datepicker').daterangepicker({

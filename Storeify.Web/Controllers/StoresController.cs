@@ -20,16 +20,16 @@ namespace Storeify.Web.Controllers
         // GET: Stores
         public async Task<IActionResult> Index()
         {
-            var store = await _storeService.GetFirstAsync();
-            StoreFormViewModel viewModel;
+            var store = await _storeService.GetSingleAsync();
+            StoreViewModel viewModel;
 
             if (store == null)
             {
-                viewModel = new StoreFormViewModel();
+                viewModel = new StoreViewModel();
             }
             else
             {
-                viewModel = _mapper.Map<StoreFormViewModel>(store);
+                viewModel = _mapper.Map<StoreViewModel>(store);
             }
 
             return View(viewModel);
@@ -37,10 +37,10 @@ namespace Storeify.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Save(StoreFormViewModel viewModel)
+        public async Task<IActionResult> Save(StoreViewModel viewModel)
         {
             var store = _mapper.Map<Store>(viewModel);
-            var storeData = await _storeService.GetFirstAsync();
+            var storeData = await _storeService.GetSingleAsync();
 
             if (storeData is not null)
             {

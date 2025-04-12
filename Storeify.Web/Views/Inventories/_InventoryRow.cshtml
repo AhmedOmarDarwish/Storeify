@@ -1,4 +1,4 @@
-﻿@model BranchViewModel
+﻿@model InventoryViewModel
 <tr>
     <td>@Model.Name</td>
     <td>
@@ -10,11 +10,10 @@
         }
         <span class="badge @statusClass js-status">@statusText</span>
     </td>
-    <th>@Model.Phone</th>
     <th>
-        @if (Model.Store != null)
+        @if (Model.Branch != null)
         {
-            <p>@Model.Store.Name</p>
+            <p>@Model.Branch.Name</p>
         }
     </th>
     <th>@Model.CreatedBy</th>
@@ -42,14 +41,14 @@
                  data-kt-menu="true" style="z-index: 107; position: absolute; right: 0; top: 100%;">
                 <div class="menu-item px-3 ">
                     <a href="javascript:;" class="menu-link px-3 js-render-modal"
-                   data-title="Edit Category" data-url="/Branches/Edit/@Model.Id"
+                   data-title="Edit Category" data-url="/Inventories/Edit/@Model.Id"
                        data-update = "true">
                     Edit
                 </a>
                 </div>
                 <div class="menu-item px-3">
                     <a href="javascript:;" class="menu-link flex-stack px-3 js-toggle-status"
-                   data-id="@Model.Id" data-url="/Branches/ToggleStatus/@Model.Id">
+                   data-id="@Model.Id" data-url="/Inventories/ToggleStatus/@Model.Id">
                         Toggle Status
                     </a>
                 </div>
