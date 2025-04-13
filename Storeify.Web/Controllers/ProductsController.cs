@@ -1,8 +1,7 @@
 ﻿namespace Storeify.Web.Controllers
 {
-    //[Authorize(Roles = AppRoles.Admin)]
-    //[Authorize(Roles = AppRoles.InventoryManager)]
-   // [Authorize(Roles = AppRoles.Manager)]
+    [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Manager},{AppRoles.InventoryManager}")]
+
     public class ProductsController : Controller
     {
         private readonly IService<Product> _productService;

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Storeify.Web.Helpers;
 
 namespace Storeify.Web
 {
@@ -25,8 +26,8 @@ namespace Storeify.Web
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultUI()
-                .AddDefaultTokenProviders();
-            // .AddSignInManager<SignInManager<ApplicationUser>>();
+                .AddDefaultTokenProviders()
+                .AddSignInManager<SignInManager<ApplicationUser>>();
 
             builder.Services.Configure<IdentityOptions>(options =>
             {
@@ -34,6 +35,8 @@ namespace Storeify.Web
 
                 options.User.RequireUniqueEmail = true;
             });
+
+            builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
             builder.Services.AddControllersWithViews();
 
             //AutoMapper
@@ -100,5 +103,5 @@ namespace Storeify.Web
 
             app.Run();
         }
-    } 
+    }
 }

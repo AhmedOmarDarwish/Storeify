@@ -1,7 +1,7 @@
 ﻿namespace Storeify.Web.Controllers
 {
-   // [Authorize(Roles = AppRoles.Admin)]
-   // [Authorize(Roles = AppRoles.InventoryManager)]
+    [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.InventoryManager}")]
+
     public class InventoriesController : Controller
     {
         private readonly IService<Branch> _branchService;

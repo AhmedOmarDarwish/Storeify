@@ -1,7 +1,7 @@
 ﻿
 namespace Storeify.Web.Controllers
 {
-    //[Authorize(Roles = AppRoles.Admin)]
+    [Authorize(Roles = AppRoles.Admin)]
     public class UsersController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -54,6 +54,7 @@ namespace Storeify.Web.Controllers
                 LastName = model.LastName,
                 UserName = model.UserName,
                 Email = model.Email,
+                EmailConfirmed = true,
                 CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value
             };
 
@@ -195,6 +196,23 @@ namespace Storeify.Web.Controllers
             await _userManager.UpdateAsync(user);
 
             return Ok(user.UpdatedOn.ToString());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Unlock(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user is null)
+                return NotFound();
+
+            var isLocked = await _userManager.IsLockedOutAsync(user);
+
+            if (isLocked)
+                await _userManager.SetLockoutEndDateAsync(user, null);
+
+            return Ok();
         }
 
         public async Task<IActionResult> AllowUserName(UserFormViewModel model)

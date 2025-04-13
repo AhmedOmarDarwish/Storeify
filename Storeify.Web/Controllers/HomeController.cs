@@ -1,6 +1,6 @@
 namespace Storeify.Web.Controllers
 {
-   // [Authorize(Roles = AppRoles.Admin)]
+    [Authorize(Roles = AppRoles.Admin)]
 
     public class HomeController : Controller
     {

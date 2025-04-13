@@ -1,7 +1,7 @@
 ﻿
 namespace Storeify.Web.Controllers
 {
-   // [Authorize(Roles = AppRoles.Admin)]
+   [Authorize(Roles = AppRoles.Admin)]
     public class BranchesController : Controller
     {
         private readonly IService<Branch> _branchService;

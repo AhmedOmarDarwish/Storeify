@@ -2,10 +2,7 @@
 
 namespace Storeify.Web.Controllers
 {
-    //[Authorize(Roles = AppRoles.Admin)]
-   // [Authorize(Roles = AppRoles.Manager)]
-    //[Authorize(Roles = AppRoles.InventoryManager)]
-
+    [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Manager},{AppRoles.InventoryManager}")]
     public class CategoriesController : Controller
     {
         private readonly IService<Category> _categoryService;
