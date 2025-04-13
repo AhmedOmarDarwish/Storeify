@@ -1,8 +1,10 @@
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Storeify.Web
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -16,9 +18,22 @@ namespace Storeify.Web
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             //Identity
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = true;
+            })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultUI()
+                .AddDefaultTokenProviders();
+            // .AddSignInManager<SignInManager<ApplicationUser>>();
+
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequiredLength = 8;
+
+                options.User.RequireUniqueEmail = true;
+            });
             builder.Services.AddControllersWithViews();
 
             //AutoMapper
@@ -27,12 +42,18 @@ namespace Storeify.Web
             builder.Services.AddExpressiveAnnotations();
 
 
+            // Register custom services
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IService<Store>, StoreService>();
             builder.Services.AddScoped<IService<Branch>, BranchService>();
             builder.Services.AddScoped<IService<Category>, CategoryService>();
             builder.Services.AddScoped<IService<Inventory>, InventoryService>();
             builder.Services.AddScoped<IService<Product>, ProductService>();
+            builder.Services.AddScoped<IService<ApplicationUser>, UserService>();
+            builder.Services.AddScoped<IService<IdentityRole>, RoleService>();
+
+            builder.Services.AddLogging();
+
 
             var app = builder.Build();
 
@@ -49,9 +70,25 @@ namespace Storeify.Web
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
+
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
+            var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+            using (var scope = scopeFactory.CreateScope())
+            {
+                var roleManger = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var userManger = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+                // Seed roles
+                await DefaultRoles.SeedAsync(roleManger);
+
+                // Seed the Admin user
+                await DefaultUsers.SeedAdminUserAsync(userManger);
+            }
 
             app.MapStaticAssets();
             app.MapControllerRoute(
@@ -63,5 +100,5 @@ namespace Storeify.Web
 
             app.Run();
         }
-    }
+    } 
 }

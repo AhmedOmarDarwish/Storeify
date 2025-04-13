@@ -1,6 +1,7 @@
 ﻿
 namespace Storeify.Web.Controllers
 {
+   // [Authorize(Roles = AppRoles.Admin)]
     public class BranchesController : Controller
     {
         private readonly IService<Branch> _branchService;
@@ -23,6 +24,7 @@ namespace Storeify.Web.Controllers
         }
 
         [HttpGet]
+        [AjaxOnly]
         public async Task<IActionResult> Create()
         {
             return PartialView("_Form", await PopulateViewModel());
@@ -36,7 +38,7 @@ namespace Storeify.Web.Controllers
             {
                 return PartialView("_Form", await PopulateViewModel(model));
             }
-            model.CreatedBy = 1;
+            //model.CreatedById = 1;
             var branch = _mapper.Map<Branch>(model);
             await _branchService.CreateAsync(branch);
             var viewModel = _mapper.Map<BranchViewModel>(branch);
@@ -80,8 +82,8 @@ namespace Storeify.Web.Controllers
             branch.StoreId = model.StoreId;
             branch.Phone = model.Phone;
             //branch = _mapper.Map<Branch>(model);
-            branch.UpdatedDate = DateTime.Now;
-            branch.UpdatedBy = 1;
+            branch.UpdatedOn = DateTime.Now;
+            branch.UpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             await _branchService.UpdateAsync(branch);
 
@@ -105,19 +107,20 @@ namespace Storeify.Web.Controllers
             if (!branch.IsDeleted)
             {
                 branch.IsDeleted = !branch.IsDeleted;
-                branch.DeletedDate = DateTime.Now;
-                branch.DeletedBy = 1;
-            } else
+                branch.DeletedOn = DateTime.Now;
+                branch.DeletedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            }
+            else
             {
                 branch.IsDeleted = !branch.IsDeleted;
-                branch.DeletedDate = null;
-                branch.DeletedBy = null;
+                branch.DeletedOn = null;
+                branch.DeletedById = null;
                 branch.DeletedReason = null;
             }
 
             await _branchService.UpdateAsync(branch);
 
-            return Ok(branch.UpdatedDate.ToString());
+            return Ok(branch.UpdatedOn.ToString());
         }
 
         private async Task<BranchViewModel> PopulateViewModel(BranchViewModel? model = null)

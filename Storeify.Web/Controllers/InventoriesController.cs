@@ -1,5 +1,7 @@
 ﻿namespace Storeify.Web.Controllers
 {
+   // [Authorize(Roles = AppRoles.Admin)]
+   // [Authorize(Roles = AppRoles.InventoryManager)]
     public class InventoriesController : Controller
     {
         private readonly IService<Branch> _branchService;
@@ -34,7 +36,7 @@
             {
                 return PartialView("_Form", await PopulateViewModel(model));
             }
-            model.CreatedBy = 1;
+            model.CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             var inventory = _mapper.Map<Inventory>(model);
             await _inventoryService.CreateAsync(inventory);
             var viewModel = _mapper.Map<InventoryViewModel>(inventory);
@@ -76,8 +78,8 @@
 
             inventory.Name = model.Name;
             inventory.BranchId = model.BranchId;
-            inventory.UpdatedDate = DateTime.Now;
-            inventory.UpdatedBy = 1;
+            inventory.UpdatedOn = DateTime.Now;
+            inventory.UpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             await _inventoryService.UpdateAsync(inventory);
 
@@ -101,20 +103,20 @@
             if (!inventory.IsDeleted)
             {
                 inventory.IsDeleted = !inventory.IsDeleted;
-                inventory.DeletedDate = DateTime.Now;
-                inventory.DeletedBy = 1;
+                inventory.DeletedOn = DateTime.Now;
+                inventory.DeletedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             }
             else
             {
                 inventory.IsDeleted = !inventory.IsDeleted;
-                inventory.DeletedDate = null;
-                inventory.DeletedBy = null;
+                inventory.DeletedOn = null;
+                inventory.DeletedById = null;
                 inventory.DeletedReason = null;
             }
 
             await _inventoryService.UpdateAsync(inventory);
 
-            return Ok(inventory.UpdatedDate.ToString());
+            return Ok(inventory.UpdatedOn.ToString());
         }
 
         private async Task<InventoryViewModel> PopulateViewModel(InventoryViewModel? model = null)

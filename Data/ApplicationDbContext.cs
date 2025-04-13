@@ -1,10 +1,6 @@
-﻿
-using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
-
-namespace Storeify.Data
+﻿namespace Storeify.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -17,7 +13,6 @@ namespace Storeify.Data
         public DbSet<Department> Departments { get; set; } = default!;
         public DbSet<Employee> Employees { get; set; } = default!;
         public DbSet<Product> Products { get; set; } = default!;
-        public DbSet<User> Users { get; set; } = default!;
         public DbSet<Review> Reviews { get; set; } = default!;
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<PurchaseOrder> PurchaseOrders { get; set; }

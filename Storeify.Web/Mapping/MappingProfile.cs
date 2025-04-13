@@ -1,4 +1,6 @@
-﻿namespace Storeify.Web.Core.Mapping
+﻿using NuGet.Protocol.Core.Types;
+
+namespace Storeify.Web.Core.Mapping
 {
     public class MappingProfile : Profile
     {
@@ -37,6 +39,17 @@
             CreateMap<Product, SelectListItem>()
                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
                .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Name));
+
+            //Users
+            CreateMap<ApplicationUser, UserViewModel>()
+            .ReverseMap();
+            CreateMap<ApplicationUser, UserFormViewModel>()
+            .ReverseMap();
+
+            CreateMap<UserFormViewModel, ApplicationUser>()
+            .ForMember(dest => dest.NormalizedEmail, opt => opt.MapFrom(src => src.Email.ToUpper()))
+            .ForMember(dest => dest.NormalizedUserName, opt => opt.MapFrom(src => src.UserName.ToUpper()))
+            .ReverseMap();
         }
 
     }

@@ -1,9 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Storeify.Core.Services;
-using Storeify.Data.Entities;
-
-namespace Storeify.Web.Controllers
+﻿namespace Storeify.Web.Controllers
 {
+    //[Authorize(Roles = AppRoles.Admin)]
+    //[Authorize(Roles = AppRoles.InventoryManager)]
+   // [Authorize(Roles = AppRoles.Manager)]
     public class ProductsController : Controller
     {
         private readonly IService<Product> _productService;
@@ -78,11 +77,11 @@ namespace Storeify.Web.Controllers
                 using var stream = System.IO.File.Create(path);
                 await model.Image.CopyToAsync(stream);
                 product.ImageUrl = imageName;
-                product.CreatedDate = DateTime.Now;
+                product.CreatedOn = DateTime.Now;
                 product.IsDeleted = !model.IsDeleted;
-                product.CreatedBy = 1;
+                product.CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             }
-            
+
             await _productService.CreateAsync(product);
             return RedirectToAction(nameof(Index));
         }
@@ -147,151 +146,18 @@ namespace Storeify.Web.Controllers
             {
                 model.ImageUrl = product.ImageUrl;
             }
-            model.CreatedDate = product.CreatedDate;
-            model.CreatedBy = product.CreatedBy;
+            model.CreatedOn = product.CreatedOn;
+            model.CreatedById = product.CreatedById;
             product = _mapper.Map(model, product);
-            product.UpdatedDate = DateTime.Now;
-            product.UpdatedBy = 1;
+            product.UpdatedOn = DateTime.Now;
+            product.UpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             product.IsDeleted = !model.IsDeleted;
 
             await _productService.UpdateAsync(product);
             return RedirectToAction(nameof(Index));
         }
 
-        //// GET: Products/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var product = await _context.Products
-        //        .Include(p => p.Category)
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (product == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(product);
-        //}
-
-        //// GET: Products/Create
-        //public IActionResult Create()
-        //{
-        //    ViewData["CategoryID"] = new SelectList(_context.Categories, "Id", "Name");
-        //    return View();
-        //}
-
-        //// POST: Products/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,Barcode,Name,Description,ImageUrl,StockQuantity,Price,CategoryID,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,IsDeleted,DeletedBy,DeletedDate,DeletedReason")] Product product)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(product);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["CategoryID"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryID);
-        //    return View(product);
-        //}
-
-        //// GET: Products/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var product = await _context.Products.FindAsync(id);
-        //    if (product == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    ViewData["CategoryID"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryID);
-        //    return View(product);
-        //}
-
-        //// POST: Products/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,Barcode,Name,Description,ImageUrl,StockQuantity,Price,CategoryID,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,IsDeleted,DeletedBy,DeletedDate,DeletedReason")] Product product)
-        //{
-        //    if (id != product.Id)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(product);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!ProductExists(product.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["CategoryID"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryID);
-        //    return View(product);
-        //}
-
-        //// GET: Products/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var product = await _context.Products
-        //        .Include(p => p.Category)
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (product == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(product);
-        //}
-
-        //// POST: Products/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var product = await _context.Products.FindAsync(id);
-        //    if (product != null)
-        //    {
-        //        _context.Products.Remove(product);
-        //    }
-
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //private bool ProductExists(int id)
-        //{
-        //    return _context.Products.Any(e => e.Id == id);
-        //}
+        
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -305,20 +171,20 @@ namespace Storeify.Web.Controllers
             if (!product.IsDeleted)
             {
                 product.IsDeleted = !product.IsDeleted;
-                product.DeletedDate = DateTime.Now;
-                product.DeletedBy = 1;
+                product.DeletedOn = DateTime.Now;
+               product.DeletedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             }
             else
             {
                 product.IsDeleted = !product.IsDeleted;
-                product.DeletedDate = null;
-                product.DeletedBy = null;
+                product.DeletedOn = null;
+                product.DeletedById = null;
                 product.DeletedReason = null;
             }
 
             await _productService.UpdateAsync(product);
 
-            return Ok(product.UpdatedDate.ToString());
+            return Ok(product.UpdatedOn.ToString());
         }
         private async Task<ProductViewModel> PopulateViewModel(ProductViewModel? model = null)
         {

@@ -1,7 +1,7 @@
-using System.Diagnostics;
-
 namespace Storeify.Web.Controllers
 {
+   // [Authorize(Roles = AppRoles.Admin)]
+
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -15,7 +15,6 @@ namespace Storeify.Web.Controllers
         {
             return View();
         }
-
         public IActionResult Privacy()
         {
             return View();
