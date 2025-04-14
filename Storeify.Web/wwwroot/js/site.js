@@ -285,17 +285,15 @@ $(document).ready(function () {
                         data: {
                             '__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
                         },
-                        success: function (LastUpdatedOn) {
-                            var row = btn.closest('tr');
+                        success: function (UpdatedOn) {
+                            var row = btn.parents('tr');
                             var status = row.find('.js-status');
                             var newStatus = status.text().trim() === 'Deleted' ? 'Available' : 'Deleted';
-
-                            // Update status text and styles
                             status.text(newStatus).toggleClass('badge-light-success badge-light-danger');
-                            row.find('.js-updated-on').html(LastUpdatedOn);
+                            row.find('.js-updated-on').html(UpdatedOn);
                             row.addClass('animate__animated animate__flash');
 
-                            showSuccessMessage("Edit Successfully");
+                            showSuccessMessage();
                         },
                         error: function () {
                             showErrorMessage();

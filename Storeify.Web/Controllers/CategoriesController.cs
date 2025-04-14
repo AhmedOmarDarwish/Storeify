@@ -104,7 +104,6 @@ namespace Storeify.Web.Controllers
                 category.DeletedReason = null;
             }
 
-                category.UpdatedOn = DateTime.Now;
             await _categoryService.UpdateAsync(category);
 
             return Ok(category.UpdatedOn.ToString());

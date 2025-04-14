@@ -10,6 +10,8 @@ global using Storeify.Core.IServices;
 global using Storeify.Core.Services;
 global using Storeify.Web.Core.Mapping;
 global using Storeify.Data.Seeds;
+global using Storeify.Web.Helpers;
+global using Storeify.Web.Settings;
 
 
 global using Microsoft.AspNetCore.Identity;

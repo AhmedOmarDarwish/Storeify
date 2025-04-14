@@ -7,7 +7,7 @@ namespace Storeify.Web.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IService<Store> _storeService;
         private readonly IMapper _mapper;
-        private List<String> _allowedExtensions = new() { ".jpg", ".jpeg", ".png" };
+        private List<String> _allowedExtensions = new() { ".jpg", ".jpeg", ".png", ".webp" };
         private int _maxAllowedSize = 2097152;
 
         public StoresController(IService<Store> storeService, IMapper mapper, IWebHostEnvironment webHostEnvironment)

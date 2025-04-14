@@ -36,7 +36,6 @@
             {
                 return PartialView("_Form", await PopulateViewModel(model));
             }
-            model.CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             var inventory = _mapper.Map<Inventory>(model);
             await _inventoryService.CreateAsync(inventory);
             var viewModel = _mapper.Map<InventoryViewModel>(inventory);
@@ -81,7 +80,8 @@
             inventory.UpdatedOn = DateTime.Now;
             inventory.UpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
-            await _inventoryService.UpdateAsync(inventory);
+
+           await _inventoryService.UpdateAsync(inventory);
 
             var viewModel = _mapper.Map<InventoryViewModel>(inventory);
             if (viewModel.BranchId != 0)
@@ -96,7 +96,6 @@
         public async Task<IActionResult> ToggleStatus(int id)
         {
             var inventory = await _inventoryService.GetByIdAsync(id);
-
             if (inventory is null)
                 return NotFound();
 

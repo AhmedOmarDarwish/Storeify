@@ -15,7 +15,7 @@
             _categoryService = categoryService;
             _webHostEnvironment = webHostEnvironment;
         }
-        private List<String> _allowedExtensions = new() { ".jpg", ".jpeg", ".png" };
+        private List<String> _allowedExtensions = new() { ".jpg", ".jpeg", ".png", ".webp" };
         private int _maxAllowedSize = 2097152;
 
         // GET: Products

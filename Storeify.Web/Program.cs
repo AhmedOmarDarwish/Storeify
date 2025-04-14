@@ -1,5 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
-using Storeify.Web.Helpers;
+
 
 namespace Storeify.Web
 {
@@ -41,6 +40,9 @@ namespace Storeify.Web
 
             //AutoMapper
             builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
+            //Cloudinary
+            builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection(nameof(CloudinarySettings)));
+
             //ExpressiveAnnotations
             builder.Services.AddExpressiveAnnotations();
 
@@ -54,6 +56,8 @@ namespace Storeify.Web
             builder.Services.AddScoped<IService<Product>, ProductService>();
             builder.Services.AddScoped<IService<ApplicationUser>, UserService>();
             builder.Services.AddScoped<IService<IdentityRole>, RoleService>();
+            builder.Services.AddTransient<IImageService, ImageService>();
+            
 
             builder.Services.AddLogging();
 
@@ -96,7 +100,7 @@ namespace Storeify.Web
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{controller=Dashboard}/{action=Index}/{id?}")
                 .WithStaticAssets();
             app.MapRazorPages()
                .WithStaticAssets();

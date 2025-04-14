@@ -1,4 +1,6 @@
-﻿namespace Storeify.Data.Entities
+﻿using System.Security.Claims;
+
+namespace Storeify.Data.Entities
 {
     [Index(nameof(Email), IsUnique = true)]
     [Index(nameof(UserName), IsUnique = true)]
@@ -19,5 +21,9 @@
 
         public DateTime? UpdatedOn { get; set; }
 
+        public static implicit operator ApplicationUser(Claim v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

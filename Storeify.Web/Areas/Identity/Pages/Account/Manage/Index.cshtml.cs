@@ -2,27 +2,24 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Storeify.Web.Areas.Identity.Pages.Account.Manage
+namespace Bookify.Web.Areas.Identity.Pages.Account.Manage
 {
     public class IndexModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IImageService _imageService;
 
         public IndexModel(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IImageService imageService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _imageService = imageService;
         }
 
         /// <summary>
@@ -55,12 +52,26 @@ namespace Storeify.Web.Areas.Identity.Pages.Account.Manage
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+
+            [Required, MaxLength(50, ErrorMessage = Errors.MaxLength), Display(Name = "First Name"),
+            RegularExpression(RegexPatterns.CharactersOnly_Eng, ErrorMessage = Errors.OnlyEnglishLetters)]
+            public string FirstName { get; set; } = null!;
+
+            [Required, MaxLength(50, ErrorMessage = Errors.MaxLength), Display(Name = "Last Name"),
+            RegularExpression(RegexPatterns.CharactersOnly_Eng, ErrorMessage = Errors.OnlyEnglishLetters)]
+            public string LastName { get; set; } = null!;
+
             [Phone]
-            [Display(Name = "Phone number")]
+            [Display(Name = "Phone number"), MaxLength(11, ErrorMessage = Errors.MaxLength),
+                RegularExpression(RegexPatterns.MobileNumber, ErrorMessage = Errors.InvalidMobileNumber)]
             public string PhoneNumber { get; set; }
+
+            public IFormFile Avatar { get; set; }
+
+            public bool ImageRemoved { get; set; }
         }
 
-        private async Task LoadAsync(IdentityUser user)
+        private async Task LoadAsync(ApplicationUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
@@ -69,6 +80,8 @@ namespace Storeify.Web.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
                 PhoneNumber = phoneNumber
             };
         }
@@ -99,6 +112,22 @@ namespace Storeify.Web.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
+            if (Input.Avatar is not null)
+            {
+                _imageService.Delete($"/images/users/{user.Id}.png");
+
+                var (isUploaded, errorMessage) = await _imageService.UploadAsync(Input.Avatar, $"{user.Id}.png", "/images/users", hasThumbnail: false);
+
+                if (!isUploaded)
+                {
+                    ModelState.AddModelError("Input.Avatar", errorMessage);
+                    await LoadAsync(user);
+                    return Page();
+                }
+            }
+            else if (Input.ImageRemoved)
+                _imageService.Delete($"/images/users/{user.Id}.png");
+
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
             {
@@ -106,6 +135,18 @@ namespace Storeify.Web.Areas.Identity.Pages.Account.Manage
                 if (!setPhoneResult.Succeeded)
                 {
                     StatusMessage = "Unexpected error when trying to set phone number.";
+                    return RedirectToPage();
+                }
+            }
+
+            if (Input.FirstName != user.FirstName || Input.LastName != user.LastName)
+            {
+                user.FirstName = Input.FirstName;
+                user.LastName = Input.LastName;
+                var setFullName = await _userManager.UpdateAsync(user);
+                if (!setFullName.Succeeded)
+                {
+                    StatusMessage = "Unexpected error when trying to set full name.";
                     return RedirectToPage();
                 }
             }

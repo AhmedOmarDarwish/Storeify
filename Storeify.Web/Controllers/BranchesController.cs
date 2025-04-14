@@ -1,4 +1,6 @@
 ﻿
+using Storeify.Data.Entities;
+
 namespace Storeify.Web.Controllers
 {
    [Authorize(Roles = AppRoles.Admin)]
@@ -38,7 +40,7 @@ namespace Storeify.Web.Controllers
             {
                 return PartialView("_Form", await PopulateViewModel(model));
             }
-            //model.CreatedById = 1;
+            model.CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             var branch = _mapper.Map<Branch>(model);
             await _branchService.CreateAsync(branch);
             var viewModel = _mapper.Map<BranchViewModel>(branch);
@@ -104,19 +106,23 @@ namespace Storeify.Web.Controllers
             if (branch is null)
                 return NotFound();
 
-            if (!branch.IsDeleted)
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (branch.IsDeleted)
             {
-                branch.IsDeleted = !branch.IsDeleted;
-                branch.DeletedOn = DateTime.Now;
-                branch.DeletedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+                // Restore
+                branch.IsDeleted = false;
+                branch.DeletedOn = null;
+                branch.DeletedById = null;
             }
             else
             {
-                branch.IsDeleted = !branch.IsDeleted;
-                branch.DeletedOn = null;
-                branch.DeletedById = null;
-                branch.DeletedReason = null;
+                // Soft Delete
+                branch.IsDeleted = true;
+                branch.DeletedOn = DateTime.Now;
+                branch.DeletedById = userId;
             }
+
 
             await _branchService.UpdateAsync(branch);
 
