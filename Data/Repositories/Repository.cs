@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace Storeify.Data.Repositories
 {
     public class Repository<T> : IRepository<T> where T : class

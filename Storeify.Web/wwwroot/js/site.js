@@ -20,7 +20,7 @@ function showErrorMessage(message = 'Something went wrong!') {
     Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: message,
+        text: message.responseText !== undefined ? message.responseText : message,
         customClass: {
             confirmButton: "btn btn-primary"
         }
@@ -71,8 +71,6 @@ $.each(headers, function (i) {
     var col = $(this);
     if (!col.hasClass('js-no-export'))
         exportedCols.push(i);
-
-
 });
 
 // Class definition
@@ -166,19 +164,19 @@ var KTDatatables = function () {
 
 $(document).ready(function () {
     //Disable submit button
-    //$('form').not('#SignOut').not('.js-excluded-validation').on('submit', function () {
-    //    if ($('.js-tinymce').length > 0) {
-    //        $('.js-tinymce').each(function () {
-    //            var input = $(this);
+    $('form').not('#SignOut').not('.js-excluded-validation').on('submit', function () {
+        if ($('.js-tinymce').length > 0) {
+            $('.js-tinymce').each(function () {
+                var input = $(this);
 
-    //            var content = tinyMCE.get(input.attr('id')).getContent();
-    //            input.val(content);
-    //        });
-    //    }
+                var content = tinyMCE.get(input.attr('id')).getContent();
+                input.val(content);
+            });
+        }
 
-    //    var isValid = $(this).valid();
-    //    if (isValid) disableSubmitButton($(this).find(':submit'));
-    //});
+        var isValid = $(this).valid();
+        if (isValid) disableSubmitButton($(this).find(':submit'));
+    });
 
     //TinyMCE
     if ($('.js-tinymce').length > 0) {
@@ -200,8 +198,8 @@ $(document).ready(function () {
 
 
     //Select2
-    //applySelect2();
-    $('.js-select2').select2();
+    applySelect2();
+    //$('.js-select2').select2();
 
 
     //Datepicker
@@ -243,7 +241,7 @@ $(document).ready(function () {
                 modal.find('.modal-body').html(form);
                 $.validator.unobtrusive.parse(modal);
                 $('input[type="tel"]').mask('(000) 0000-0000');  
-
+                applySelect2();
 
                 // Reinitialize select2 & datepicker inside modal
                 modal.on('shown.bs.modal', function () {
@@ -287,17 +285,15 @@ $(document).ready(function () {
                         data: {
                             '__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
                         },
-                        success: function (LastUpdatedOn) {
-                            var row = btn.closest('tr');
+                        success: function (UpdatedOn) {
+                            var row = btn.parents('tr');
                             var status = row.find('.js-status');
                             var newStatus = status.text().trim() === 'Deleted' ? 'Available' : 'Deleted';
-
-                            // Update status text and styles
                             status.text(newStatus).toggleClass('badge-light-success badge-light-danger');
-                            row.find('.js-updated-on').html(LastUpdatedOn);
+                            row.find('.js-updated-on').html(UpdatedOn);
                             row.addClass('animate__animated animate__flash');
 
-                            showSuccessMessage("Edit Successfully");
+                            showSuccessMessage();
                         },
                         error: function () {
                             showErrorMessage();
@@ -306,5 +302,45 @@ $(document).ready(function () {
                 }
             }
         });
+    });
+
+    //Handle Confirm
+    $('body').delegate('.js-confirm', 'click', function () {
+        var btn = $(this);
+
+        bootbox.confirm({
+            message: btn.data('message'),
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-success'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-secondary'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    $.post({
+                        url: btn.data('url'),
+                        data: {
+                            '__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function () {
+                            showSuccessMessage();
+                        },
+                        error: function () {
+                            showErrorMessage();
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+    //Hanlde signout
+    $('.js-signout').on('click', function () {
+        $('#SignOut').submit();
     });
 });

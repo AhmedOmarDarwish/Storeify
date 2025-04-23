@@ -1,12 +1,13 @@
 ﻿
 namespace Storeify.Web.Controllers
 {
+    [Authorize(Roles = AppRoles.Admin)]
     public class StoresController : Controller
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IService<Store> _storeService;
         private readonly IMapper _mapper;
-        private List<String> _allowedExtensions = new() { ".jpg", ".jpeg", ".png" };
+        private List<String> _allowedExtensions = new() { ".jpg", ".jpeg", ".png", ".webp" };
         private int _maxAllowedSize = 2097152;
 
         public StoresController(IService<Store> storeService, IMapper mapper, IWebHostEnvironment webHostEnvironment)
@@ -44,8 +45,8 @@ namespace Storeify.Web.Controllers
 
             if (storeData is not null)
             {
-                store.UpdatedBy = 1;
-                store.UpdatedDate = DateTime.Now;
+                store.UpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+                store.UpdatedOn = DateTime.Now;
 
                 if (viewModel.Image is not null)
                 {
@@ -70,8 +71,8 @@ namespace Storeify.Web.Controllers
             }
             else
             {
-                store.CreatedBy = 1;
-                store.CreatedDate = DateTime.Now;
+                store.CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+                store.CreatedOn = DateTime.Now;
 
                 if (viewModel.Image is not null)
                 {

@@ -1,6 +1,9 @@
 ﻿
+using Storeify.Data.Entities;
+
 namespace Storeify.Web.Controllers
 {
+   [Authorize(Roles = AppRoles.Admin)]
     public class BranchesController : Controller
     {
         private readonly IService<Branch> _branchService;
@@ -23,6 +26,7 @@ namespace Storeify.Web.Controllers
         }
 
         [HttpGet]
+        [AjaxOnly]
         public async Task<IActionResult> Create()
         {
             return PartialView("_Form", await PopulateViewModel());
@@ -36,7 +40,7 @@ namespace Storeify.Web.Controllers
             {
                 return PartialView("_Form", await PopulateViewModel(model));
             }
-            model.CreatedBy = 1;
+            model.CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             var branch = _mapper.Map<Branch>(model);
             await _branchService.CreateAsync(branch);
             var viewModel = _mapper.Map<BranchViewModel>(branch);
@@ -80,8 +84,8 @@ namespace Storeify.Web.Controllers
             branch.StoreId = model.StoreId;
             branch.Phone = model.Phone;
             //branch = _mapper.Map<Branch>(model);
-            branch.UpdatedDate = DateTime.Now;
-            branch.UpdatedBy = 1;
+            branch.UpdatedOn = DateTime.Now;
+            branch.UpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             await _branchService.UpdateAsync(branch);
 
@@ -102,22 +106,27 @@ namespace Storeify.Web.Controllers
             if (branch is null)
                 return NotFound();
 
-            if (!branch.IsDeleted)
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (branch.IsDeleted)
             {
-                branch.IsDeleted = !branch.IsDeleted;
-                branch.DeletedDate = DateTime.Now;
-                branch.DeletedBy = 1;
-            } else
-            {
-                branch.IsDeleted = !branch.IsDeleted;
-                branch.DeletedDate = null;
-                branch.DeletedBy = null;
-                branch.DeletedReason = null;
+                // Restore
+                branch.IsDeleted = false;
+                branch.DeletedOn = null;
+                branch.DeletedById = null;
             }
+            else
+            {
+                // Soft Delete
+                branch.IsDeleted = true;
+                branch.DeletedOn = DateTime.Now;
+                branch.DeletedById = userId;
+            }
+
 
             await _branchService.UpdateAsync(branch);
 
-            return Ok(branch.UpdatedDate.ToString());
+            return Ok(branch.UpdatedOn.ToString());
         }
 
         private async Task<BranchViewModel> PopulateViewModel(BranchViewModel? model = null)

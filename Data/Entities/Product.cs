@@ -13,7 +13,7 @@
         [MaxLength(50)]
         public string Name { get; set; } = null!;
 
-        [MaxLength(1000)]
+        [MaxLength(500)]
         public string? Description { get; set; }
 
         [MaxLength(length: 300)]

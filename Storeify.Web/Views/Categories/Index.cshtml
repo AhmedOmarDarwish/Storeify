@@ -35,7 +35,7 @@
     </div>
     <div>
         <a href="javascript:;" class="btn btn-sm btn-primary js-render-modal"
-           data-title="Add Branch" data-url="/Categories/Create/">
+           data-title="Add Category" data-url="/Categories/Create/">
             <i class="bi bi-plus-square-dotted"></i>
             Add
         </a>
@@ -53,12 +53,12 @@
                         <th> @Html.DisplayNameFor(model => model.Name)</th>
                         <th>@Html.DisplayNameFor(model => model.IsDeleted)</th>
                         <th>@Html.DisplayNameFor(model => model.Description)</th>
-                        <th>@Html.DisplayNameFor(model => model.CreatedBy)</th>
-                        <th>@Html.DisplayNameFor(model => model.CreatedDate)</th>
+                        @* <th>@Html.DisplayNameFor(model => model.CreatedById)</th> *@
+                        <th>@Html.DisplayNameFor(model => model.CreatedOn)</th>
                         @* <th>@Html.DisplayNameFor(model => model.UpdatedBy)</th> *@
-                        <th> @Html.DisplayNameFor(model => model.UpdatedDate)</th>
+                        <th> @Html.DisplayNameFor(model => model.UpdatedOn)</th>
                         @* <th>@Html.DisplayNameFor(model => model.DeletedBy)</th> *@
-                        @* <th>@Html.DisplayNameFor(model => model.DeletedDate)</th> *@
+                        @* <th>@Html.DisplayNameFor(model => model.DeletedOn)</th> *@
                         @* <th>@Html.DisplayNameFor(model => model.DeletedReason)</th> *@
                         <th class="js-no-export">Action</th>
                     </tr>

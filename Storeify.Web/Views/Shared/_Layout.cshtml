@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@inject SignInManager<ApplicationUser> SignInManager
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -7,8 +8,9 @@
     <script type="importmap"></script>
 
     <!--begin::Fonts(mandatory for all pages)-->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
-    <!--end::Fonts-->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap">
+	<!--end::Fonts-->
 
     @* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> *@
 	<link rel="stylesheet" href="~/assets/css/plugins.bundle.css" type="text/css" />
@@ -32,36 +34,42 @@
 	</div>
 	<!--end::Page loading-->
 	<!--begin::Main-->
-	<!--begin::Root-->
-	<div class="d-flex flex-column flex-root">
-		<!--begin::Page-->
-		<div class="page d-flex flex-row flex-column-fluid">
-			<!--begin::Wrapper-->
-			<div class="wrapper d-flex flex-column flex-row-fluid" id="kt_wrapper">
-				<!--begin::Header-->
-				<partial name="_Header"/>
-				<!--end::Header-->
-
-				<!--begin::Content wrapper-->
-				<div class="d-flex flex-column-fluid">
-					<!--begin::Aside-->
-					<partial name="_Aside" />
-					<!--end::Aside-->
-					<!--begin::Container-->
-					<div class="d-flex flex-column flex-column-fluid container-fluid">
-						<div class="content flex-column-fluid" id="kt_content">
-						@RenderBody()
+	@if (SignInManager.IsSignedIn(User))
+	{
+		<!--begin::Root-->
+		<div class="d-flex flex-column flex-root">
+			<!--begin::Page-->
+			<div class="page d-flex flex-row flex-column-fluid">
+				<!--begin::Wrapper-->
+				<div class="wrapper d-flex flex-column flex-row-fluid" id="kt_wrapper">
+					<!--begin::Header-->
+					<partial name="_Header" />
+					<!--end::Header-->
+					<!--begin::Content wrapper-->
+					<div class="d-flex flex-column-fluid">
+						<!--begin::Aside-->
+						<partial name="_Aside" />
+						<!--end::Aside-->
+						<!--begin::Container-->
+						<div class="d-flex flex-column flex-column-fluid container-fluid">
+							<div class="content flex-column-fluid" id="kt_content">
+								@RenderBody()
+							</div>
 						</div>
+						<!--end::Container-->
 					</div>
-					<!--end::Container-->
+					<!--end::Content wrapper-->
 				</div>
-				<!--end::Content wrapper-->
+				<!--end::Wrapper-->
 			</div>
-			<!--end::Wrapper-->
+			<!--end::Page-->
 		</div>
-		<!--end::Page-->
-	</div>
-	<!--end::Root-->
+		<!--end::Root-->
+}
+	else
+	{
+		@RenderBody()
+	}
 	<!--end::Main-->
 	<!--begin::Scrolltop-->
 	<div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">

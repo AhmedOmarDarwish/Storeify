@@ -1,7 +1,7 @@
 ﻿@model ProductViewModel
 <tr>
     <td>
-        <div class="symbol symbol-50px overflow-hidden me-3">
+        <div class="symbol symbol-70px overflow-hidden me-3">
             <a asp-action="Details" asp-route-id="@Model.Id">
                 <div class="symbol-label h-70px">
                     <img src="/images/@(string.IsNullOrEmpty(Model.ImageUrl) ? "image-placeholder.jpg" : $"/products/{Model.ImageUrl}")" alt="cover" class="w-100">
@@ -22,22 +22,22 @@
         }
         <span class="badge @statusClass js-status">@statusText</span>
     </td>
-    <th>@Model.Barcode</th>
-    <th>
+    <td>@Model.Barcode</td>
+    <td>
         @if (Model.Category != null)
         {
             <p>@Model.Category.Name</p>
         }
-    </th>
-    <th>@Model.Price</th>
-    <th>@Model.StockQuantity</th>
-    <th>@Model.CreatedBy</th>
-    <th>@Model.CreatedDate</th>
-    @* <th>@Model.UpdatedBy</th> *@
-    <th class ="js-updated-on"> @Model.UpdatedDate</th>
-    @* <th>@Model.DeletedBy</th> *@
-    @* <th class ="js-updated-on"> @Model.DeletedDate</th> *@
-    @* <th>@Model.DeletedReason</th> *@
+    </td>
+    <td>@Model.Price</td>
+    <td>@Model.StockQuantity</td>
+    @* <td>@Model.CreatedById</td> *@
+    <td>@Model.CreatedOn</td>
+    @* <td>@Model.UpdatedBy</td> *@
+    <td class ="js-updated-on"> @Model.UpdatedOn</td>
+    @* <td>@Model.DeletedBy</td> *@
+    @* <td"> @Model.DeletedOn</td> *@
+    @* <td>@Model.DeletedReason</td> *@
     <td>
             <button type="button" class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary"
                 data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" data-kt-menu-overflow="true">

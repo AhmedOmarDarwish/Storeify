@@ -5,7 +5,7 @@ namespace Storeify.Web.ViewModels
     public class ProductViewModel:BasseModel
     {
         public int Id { get; set; }
-        [Remote("AllowItem", null!, AdditionalFields = "Id,Barcode", ErrorMessage = Errors.DuplicatedBarcode)]
+        [Remote("AllowItem", null!, AdditionalFields = "Id", ErrorMessage = Errors.DuplicatedBarcode)]
         [MaxLength(50, ErrorMessage = Errors.MaxLength)]
         public string Barcode { get; set; } = null!;
 
@@ -14,7 +14,7 @@ namespace Storeify.Web.ViewModels
         [MaxLength(50, ErrorMessage = Errors.MaxLength)]
         public string Name { get; set; } = null!;
 
-        [MaxLength(1000, ErrorMessage = Errors.MaxLength)]
+        [MaxLength(500, ErrorMessage = Errors.MaxLength)]
         public string? Description { get; set; }
 
         [MaxLength(length: 300, ErrorMessage = Errors.MaxLength)]

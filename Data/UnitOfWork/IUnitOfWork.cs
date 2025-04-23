@@ -7,6 +7,8 @@
         IRepository<Category> CategoryRepository { get; }
         IRepository<Inventory> InventoryRepository { get; }
         IRepository<Product> ProductRepository { get; }
+        IRepository<ApplicationUser> UserRepository { get; }
+        IRepository<IdentityRole> RoleRepository { get; }
         Task<int> CompleteAsync();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Storeify.Web.Controllers
 {
+    [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Manager},{AppRoles.InventoryManager}")]
     public class CategoriesController : Controller
     {
         private readonly IService<Category> _categoryService;
@@ -36,7 +37,7 @@ namespace Storeify.Web.Controllers
             {
                 return PartialView("_Form", model);
             }
-            model.CreatedBy = 1;
+            model.CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             var category = _mapper.Map<Category>(model);
             await _categoryService.CreateAsync(category);
             var viewModel = _mapper.Map<CategoryViewModel>(category);
@@ -71,8 +72,8 @@ namespace Storeify.Web.Controllers
 
             category.Name = model.Name;
             category.Description = model.Description;
-            category.UpdatedDate = DateTime.Now;
-            category.UpdatedBy = 1;
+            category.UpdatedOn = DateTime.Now;
+            category.UpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             await _categoryService.UpdateAsync(category);
 
@@ -92,21 +93,20 @@ namespace Storeify.Web.Controllers
             if (!category.IsDeleted)
             {
                 category.IsDeleted = !category.IsDeleted;
-                category.DeletedDate = DateTime.Now;
-                category.DeletedBy = 1;
+                category.DeletedOn = DateTime.Now;
+                category.DeletedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             }
             else
             {
                 category.IsDeleted = !category.IsDeleted;
-                category.DeletedDate = null;
-                category.DeletedBy = null;
+                category.DeletedOn = null;
+                category.DeletedById = null;
                 category.DeletedReason = null;
             }
 
-                category.UpdatedDate = DateTime.Now;
             await _categoryService.UpdateAsync(category);
 
-            return Ok(category.UpdatedDate.ToString());
+            return Ok(category.UpdatedOn.ToString());
         }
         public async Task<IActionResult> AllowItem(CategoryViewModel model)
         {

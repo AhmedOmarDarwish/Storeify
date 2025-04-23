@@ -2,18 +2,22 @@
 {
     public class BasseModel
     {
-        public int CreatedBy { get; set; }
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public string? CreatedById { get; set; }
+        public ApplicationUser? CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; } = DateTime.Now;
 
-        public int? UpdatedBy { get; set; }
-        public DateTime? UpdatedDate { get; set; }
+        public string? UpdatedById { get; set; }
+        public ApplicationUser? UpdatedBy { get; set; }
+        public DateTime? UpdatedOn { get; set; }
 
         [Display(Name = "Status")]
         public bool IsDeleted { get; set; } = false;
-        public int? DeletedBy { get; set; }
-
-        public DateTime? DeletedDate { get; set; }
+        public string? DeletedById { get; set; }
+        public ApplicationUser? DeletedBy { get; set; }
+        public DateTime? DeletedOn { get; set; }
         public string? DeletedReason { get; set; }
+
+
 
     }
 }

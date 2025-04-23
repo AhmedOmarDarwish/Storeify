@@ -10,19 +10,19 @@
         }
         <span class="badge @statusClass js-status">@statusText</span>
     </td>
-    <th>
+    <td>
         @if (Model.Branch != null)
         {
             <p>@Model.Branch.Name</p>
         }
-    </th>
-    <th>@Model.CreatedBy</th>
-    <th>@Model.CreatedDate</th>
-    @* <th>@Model.UpdatedBy</th> *@
-    <th class ="js-updated-on"> @Model.UpdatedDate</th>
-    @* <th>@Model.DeletedBy</th> *@
-    @* <th class ="js-updated-on"> @Model.DeletedDate</th> *@
-    @* <th>@Model.DeletedReason</th> *@
+    </td>
+    @* <td>@Model.CreatedById</td> *@
+    <td>@Model.CreatedOn</td>
+    @* <td>@Model.UpdatedBy</td> *@
+    <td class ="js-updated-on"> @Model.UpdatedOn</td>
+    @* <td>@Model.DeletedBy</td> *@
+    @* <td> @Model.DeletedOn</td> *@
+    @* <td>@Model.DeletedReason</td> *@
     <td>
             <button type="button" class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary"
                 data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" data-kt-menu-overflow="true">
