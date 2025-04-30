@@ -18,7 +18,7 @@
     <h2>🌟Technical-Focused Descriptions</h2>
     <ul>
     <li>Storeify – built using ASP.NET Core MVC and SQL Server for robust and secure store management.</li>
-    <li>A full-stack ASP.NET Core MVC application for store management, leveraging Entity Framework, RESTful APIs, and modern web development practices.</li>
+    <li>A full-stack ASP.NET Core MVC application for store management, leveraging Entity Framework and modern web development practices.</li>
     <li>Storeify – a modular, scalable system for inventory and sales tracking, developed with ASP.NET Core MVC, C#, and JavaScript.</li>
     </ul>
   </div>
